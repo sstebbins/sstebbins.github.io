@@ -1,13 +1,71 @@
-<!DOCTYPE html>
-
 <html>
-
+<head>
+	<title>Famotidine Dosing by Weight</title>
+</head>
 <body>
 
-<h1>Famotidine Calculator</h1>
 
-<p>test</p>
+<h3>Age</h3>
+<select id="selected_age">
+  <option value="lt3"> &#60;3 months</option>
+  <option value="3to12m">3-12 months</option>
+  <option value="1to16y">1-16 years</option>
+</select>
+<h3>Weight (lb)</h3>
+<input type="text" id="weight" name="weight"><br>
+<input type="button" id="calculate" value="Calculate">
+<p id="dose"></p>
 
-</body>
+<script>
+const maxDoseInfant = 20; // 20 mg dose BID, 40mg  total for < 1yo.
+const maxDoseChild = 40; // 40mg dose BID, 80mg total for >= 1yo.
+const conc = 8; // mg/mL, or 40mg per 5mL
 
+document.getElementById("calculate").onclick = function() {
+  var weight = document.getElementById("weight").value;
+  var weight_kg = weight * 0.453592;
+  var select = document.getElementById("selected_age");
+  var age = select.options[select.selectedIndex].value;
+  var instructions = "Please select above options."
+
+  if (age == "lt3") {
+    var minDoseMg = weight_kg * 0.5;
+    if (minDoseMg > maxDoseInfant) {
+      minDoseMg = maxDoseInfant;
+    }
+    var maxDoseMg = weight_kg;
+    if (maxDoseMg > maxDoseInfant) {
+      maxDoseMg = maxDoseInfant;
+    }
+    var minDoseML = minDoseMg / conc;
+    var maxDoseML = maxDoseMg / conc;
+    instructions = minDoseML.toFixed(1) + ' to ' + maxDoseML.toFixed(1) + ' mL PO QD x 4-8 wk.';
+  }
+
+  if (age == "3to12m") {
+    var minDoseMg = weight_kg * 0.5;
+    if (minDoseMg > maxDoseInfant) {
+      minDoseMg = maxDoseInfant;
+    }
+    var maxDoseMg = weight_kg;
+    if (maxDoseMg > maxDoseInfant) {
+      maxDoseMg = maxDoseInfant;
+    }
+    var minDoseML = minDoseMg / conc;
+    var maxDoseML = maxDoseMg / conc;
+    instructions = minDoseML.toFixed(1) + ' to ' + maxDoseML.toFixed(1) + ' mL PO BID x 4-8 wk.';
+  }
+
+  if (age == "1to16y") {
+    var maxDoseMg = weight_kg * 0.5;
+    if (maxDoseMg > maxDoseChild) {
+      maxDoseMg = maxDoseChild;
+    }
+    var maxDoseML = maxDoseMg / conc;
+    instructions = maxDoseML.toFixed(1) + ' mL PO BID x 6-12 wk.';
+  }
+
+  document.getElementById("dose").innerHTML = instructions;
+}
+</script></body>
 </html>
